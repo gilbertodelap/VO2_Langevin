@@ -1,28 +1,21 @@
 %% test kinetic energy
 
-
-addpath(genpath('~/Dropbox/xdscode/'))
-% addpath('~/Documents/CDWs/SwissFEL_Feb2021/remodelGL/')
-addpath(genpath('~/Dropbox/include/matlab/xspde_matlab/XSPDE_code/'));
-
-cd ~/Documents/VO2/simu/2TMD/dynamics/Jan2022/
-
 %% define paths
 
 % addpath(genpath('~/Dropbox/xdscode/'))
 % addpath('~/Documents/CDWs/SwissFEL_Feb2021/remodelGL/')
-addpath(genpath('~/Documents/DATA/2022/Jan2022_model/xspde_matlab/XSPDE_code/'));
-addpath(genpath('~/Documents/DATA/2020/VO2_2015_data/xdscode/'))
-% cd ~/Documents/VO2/simu/2TMD/dynamics/Jan2022/
-cd ~/Documents/DATA/2022/Jan2022_model/untitled_folder/untitled_folder/
+cd ~/Documents/DATA/2022/VO2_Langevin/
+addpath(genpath('./xspde_matlab/XSPDE_code/'));
+addpath(genpath('~/Documents/xdscode-master/'))
+
 
 %% parameters to simulate the dynamics in 2D %%%%%%%%%%%%%%%%%%%%%%%%%%%
-Lx = 90;
+Lx = 90*4;
 Ly = 60;
-T = 3;
+T = 6;
 Nx = Lx;
 Ny = Ly;
-Nt = 100;
+Nt = 600;
 %
 clear opts videofile
 opts.ranges = [T, Lx, Ly];
@@ -48,11 +41,12 @@ decay/m;  % 5.5 THz
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 opts.tauf = 1.2;
-opts.xi0 = 0.2*Lx;       % pump penetration depth [nm]
+opts.xi0 = 0.1*Lx;       % pump penetration depth [nm]
 opts.xi0xray = 1*Lx;     % xray penetration depth [nm]
-opts.kT =1.1116e-04*100;        % kT (units?)
+opts.kT =1.1116e-04*300;        % kT (units?)
+% opts.kT =1e-4*20;        % kT (units?)
 opts.cohlengths2 = 1e-2*[1.2^2,1.2^2];  % nm^2
-opts.cohlengths2 = 20.6e-2*[1.2^2,1.2^2];  % nm^2
+opts.cohlengths2 = 0.1*20.6e-2*[1.2^2,1.2^2];  % nm^2
 opts.a = (2*pi*3)^2/2;  % should be a/m
 % opts.a = 303; %THz^2 from 1.6eV/A^2/(Mass of vanadium)
 opts.gam = 0.03;        % [ps]

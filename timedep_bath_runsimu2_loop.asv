@@ -1,23 +1,31 @@
 %% define paths
 
-addpath(genpath('~/Dropbox/xdscode/'))
+% addpath(genpath('~/Dropbox/xdscode/'))
 % addpath('~/Documents/CDWs/SwissFEL_Feb2021/remodelGL/')
-addpath(genpath('~/Dropbox/include/matlab/xspde_matlab/XSPDE_code/'));
+% addpath(genpath('~/Dropbox/include/matlab/xspde_matlab/XSPDE_code/'));
 
 % cd ~/Documents/VO2/simu/2TMD/dynamics/Jan2022/
-cd ~/Documents/DATA/2022/Jan2022_model/untitled_folder/untitled_folder/
-
+cd ~/Documents/DATA/2022/VO2_Langevin/
+addpath(genpath('./xspde_matlab/XSPDE_code/'));
+addpath(genpath('~/Documents/xdscode-master/'))
 
 %%
-prefactrvals = [100, 200, 400, 800]';
-prefactrvals = [100, 200]';
+% prefactrvals = [100, 200, 400, 800]';
+simT = []
+prefactrvals = [200]';
+% xi0vals = [ .1, .3, .5, .7, .9]';
+xi0vals = [ .1]';
+prefactcohl2vals = [1];
+prefactsigvals = [.1];
+
 for myprefactr = 1:size(prefactrvals)
     prefrval = prefactrvals(myprefactr);
-xi0vals = [ .1, .3, .5, .7, .9]';
-% xi0vals = [ .1]';
 for myxi0val = 1:size(xi0vals)
     xi0val = xi0vals(myxi0val);
-
+for myprefactcohl2val = 1:size(prefactcohl2vals)
+    prefcohl2val = prefactcohl2vals(myprefactcohl2val);
+for myprefactsigval = 1:size(prefactsigvals)
+    prefsigval = prefactsigvals(myprefactsigval);
 %% parameters to simulate the dynamics in 2D %%%%%%%%%%%%%%%%%%%%%%%%%%%
 Lx = 90*4;
 Ly = 60;
@@ -51,7 +59,8 @@ freq    = sqrt(2*1.602e-19*1e20*a/m)/pi/2*1e-12; % [THz]
 
 opts.a = (2*pi*3)^2/2;  % should be a/m
 % opts.cohlengths2 = 15.6e-2*[1.2^2,1.2^2];  % nm^2
-opts.cohlengths2 = .0*20.6e-2*[1.2^2,1.2^2];  % nm^2
+prefact_cohl2 = prefcohl2val;
+opts.cohlengths2 = prefact_cohl2*20.6e-2*[1.2^2,1.2^2];  % nm^2
 % opts.cohlengths2 = 1e-2*[1.2^2,1.2^2];  % nm^2
 
 opts.gam = 0.03;        % [ps]
@@ -95,11 +104,12 @@ opts.sig = @(xs,t) sqrt(2*opts.gam*opts.kT);    % constant temperature
 %% run over the ensemble of initial conditions
 Nensembles = 1;
 % setup k-space
-nq = 19;
-Qs = linspace(1, 10, nq)'*[1,1]; 
+nq = 201;
+Qs = linspace(0, 5, nq)'*[1,1]; 
 % Qs2 = linspace(6, 10, nq)'*[1,-1];
-Qs2 = linspace(1, 10, nq)'*[1,0]; 
-Qs = [Qs; Qs2]';
+% Qs2 = linspace(0, 5, nq)'*[1,2]; 
+% Qs = [Qs; Qs2]';
+Qs = [Qs]';
 Fall = zeros(size(Qs,2), opts.npoints(1), Nensembles);
 
 % for a 2D grid in Q-space use this:
@@ -119,7 +129,7 @@ opts0.sig = @(xs,t) sqrt(2*opts0.gam*opts0.kT);     % constant temperature
 
 % prefact_r = 100;
 prefact_r = prefrval;
-prefact_sig = .01;
+prefact_sig = prefsigval;
 
 % this option set the potential (r param.) and temperature (sig) for t>0
 % rT      = @(t) exp(-(t)/opts.tauf).*nheaviside(t);
@@ -290,13 +300,15 @@ F2max = F2max./max(F2mean,[],2);
 % save(outputfilename, 'X','opts','F2all')
 
 % save_folder = './saved_sims/';
-save_folder = '/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/';
+save_folder = '../VO2_Langevin_sims/';
 % myfile = sprintf('simT=%1g_prefr=%1g_tdep.mat',opts.kT,prefact_r)
-myfile = sprintf('simT=%1g_gam=%1g_prefr=%1g_prefsig=%1g_xi0=%1g_tdep.mat',opts.kT,opts.gam,prefact_r,prefact_sig,opts.xi0)
+myfile = sprintf('simT=%1g_gam=%1g_prefr=%1g_prefsig=%1g_prefcohl2=%1g_xi0=%1g_tdep.mat',opts.kT,opts.gam,prefact_r,prefact_sig,prefact_cohl2,opts.xi0)
 save(strcat(save_folder,myfile), 'F2all','X00','X','Nx','Ny','Nt', 'opts0','opts','t','Qs')
 
 
 videofile=sprintf('movies/movT=%1.g_tdep',opts.kT)
+end
+end
 end
 end
 %% Plot the diffuse only

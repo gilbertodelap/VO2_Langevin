@@ -1,11 +1,14 @@
+
 %% define paths
 
-addpath(genpath('~/Dropbox/xdscode/'))
+% addpath(genpath('~/Dropbox/xdscode/'))
 % addpath('~/Documents/CDWs/SwissFEL_Feb2021/remodelGL/')
-addpath(genpath('~/Dropbox/include/matlab/xspde_matlab/XSPDE_code/'));
+% addpath(genpath('~/Dropbox/include/matlab/xspde_matlab/XSPDE_code/'));
 
 % cd ~/Documents/VO2/simu/2TMD/dynamics/Jan2022/
-cd ~/Documents/DATA/2022/Jan2022_model/untitled_folder/untitled_folder/
+cd ~/Documents/DATA/2022/VO2_Langevin/
+addpath(genpath('./xspde_matlab/XSPDE_code/'));
+addpath(genpath('~/Documents/xdscode-master/'))
 
 %% parameters to simulate the dynamics in 2D %%%%%%%%%%%%%%%%%%%%%%%%%%%
 Lx = 90*4;
@@ -277,7 +280,7 @@ grid minor
 % outputfilename=sprintf('output/simT=%1g_tdep.mat',opts.kT);
 % save(outputfilename, 'X','opts','F2all')
 
-save_folder = './saved_sims/';
+save_folder = '../VO2_Langevin_sims';
 % myfile = sprintf('simT=%1g_prefr=%1g_tdep.mat',opts.kT,prefact_r)
 myfile = sprintf('simT=%1g_gam=%1g_prefr=%1g_prefsig=%1g_xi0=%1g_tdep.mat',opts.kT,opts.gam,prefact_r,prefact_sig,opts.xi0)
 save(strcat(save_folder,myfile), 'F2all','X00','X','Nx','Ny','Nt', 'opts0','opts','t','Qs')

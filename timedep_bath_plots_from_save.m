@@ -2,19 +2,12 @@
 % save_folder = './saved_sims/';
 % myfile = 'test1.mat';
 % save(strcat(save_folder,myfile), 'F2all','X00','X','Nx','Ny','Nt', 'opts0','opts')
-save_folder = './saved_sims/';
+save_folder = '../VO2_Langevin_sims/';
 
-% myfile = 'simT=0.002_prefr=0.4_tdep.mat';
-% myfile = 'simT=0.002_prefr=0.7_xi0=0.1_tdep.mat';
-% myfile = 'simT=0.007_prefr=0.8_tdep.mat';
-myfile = 'simT=0.002_prefr=0.8_tdep_noLaplacian.mat';
-% myfile = 'simT=0.002_prefr=1.2_xi0=0.1_tdep.mat';
-% myfile = 'simT=0.007_prefr=1.6_tdep.mat';
-% myfile = 'simT=0.002_prefr=2.4_tdep.mat';
 % myfile = 'simT=0.002_prefr=3.2_xi0=0.1_tdep.mat';
 load(strcat(save_folder,myfile))
 %% plot lattice distortion field
-figure(1); 
+figure(1); close(figure(1)); figure(1)
 figpos = get(figure(1),'position');
 close(figure(1));
 figure(1);
@@ -131,142 +124,97 @@ end
 % % fprintf('Done.\n')
 
 
-%%  Plot the averaged structure factors some
-
-F2mean = mean(F2all,3);
-% F2max = (F2mean-mean(F2mean(:,t<.5),2));
-% F2max = F2max./max(F2mean,[],2);
-
-F2max = F2mean./mean(F2mean(:,t<.5),2);
-% F2max = F2mean./max(F2mean,[],2);
-
-
-
-figure(10); clf
-idxQs = 1;
-% idx = [1, 50, 100,150,200];
-% offsets = [0, 1 ,2,3,4]';
-idx = [1] %+200 % for other direction of Qs;
-offsets = [0]';
-plot(t, F2max(idx,:) + offsets)
-% plot(t, F2max(idx,:)/(F2max(idx,10)) + offsets)
-hold on
-F2difuse = mean(F2mean(F2mean(:,12) < 1e2,:),1);
-% plot(t, F2difuse./F2difuse(end))
-% plot(t, 3*mean(F2max(idx(1):idx(end),:),1)+2,'b')
-% xlim([-.2, 3])
-legend([num2str([num2str(Qs(1,idx)')]); "m"])
-xlabel('time')
-ylabel('Relative Intensity (arb)')
-xlim([0.9, 5.5])
-xlim([-0.1, 5.5])
-grid on 
-grid minor
-
-
-
 %% plot same peak diffeerent runs
 % save_folder = './saved_sims/';
-save_folder = "/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/Laplacian_0p0/sigma_0p00/";
-save_folder = "/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/Laplacian_0p1/sigma_0p00/";
-save_folder = "/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/Laplacian_1p0/sigma_0p00/";
+save_folder = "../VO2_Langevin_sims/";
 
-% save_folder = "/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/Laplacian_0p0/sigma_0p01/";
-% save_folder = "/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/Laplacian_0p1/sigma_0p01/";
-% save_folder = "/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/Laplacian_1p0/sigma_0p01/";
-% runnames = [
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.4_xi0=36_tdep.mat",
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.4_xi0=108_tdep.mat",
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.4_xi0=216_tdep.mat",
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.4_xi0=360_tdep.mat",
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.4_xi0=720_tdep.mat",
-%     
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.4_xi0=36_tdep.mat",
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.4_xi0=360_tdep.mat",
-% 
-% %     "simT=0_gam=0.03_prefr=400_prefsig=0.4_xi0=36_tdep.mat",
-% %     "simT=0_gam=0.03_prefr=400_prefsig=0.4_xi0=360_tdep.mat",
-% 
-%     "simT=0_gam=0.03_prefr=800_prefsig=0.4_xi0=36_tdep.mat",
-% %     "simT=0_gam=0.03_prefr=800_prefsig=0.4_xi0=360_tdep.mat",
-% 
-% 
-% 
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.1_xi0=36_tdep.mat",
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.1_xi0=360_tdep.mat",
-%     ];
+% initialize what to plot
+simT_plot = 'all'; gam_plot = 'all'; prefr_plot = 'all'; 
+prefsig_plot = 'all'; prefcohl2_plot = 'all'; xi0_plot = 'all';
 
-runnames = [
-%     "simT=0_gam=0.03_prefr=50_prefsig=0_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=50_prefsig=0_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=50_prefsig=0_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=50_prefsig=0_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=50_prefsig=0_xi0=324_tdep.mat"
+simT_plot = [0.002];
+xi0_plot = [36];
+prefcohl2_plot = [.1];
+prefsig_plot = [0.1];
+% runnames = everything in folder
+runname_list = string({dir(strcat(save_folder,'*.mat')).name})';
 
-%     "simT=0_gam=0.03_prefr=100_prefsig=0_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=100_prefsig=0_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=100_prefsig=0_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=100_prefsig=0_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=100_prefsig=0_xi0=324_tdep.mat"
+%
+runnames = {};
+list_iter = 1;
+for myindex = 1:size(runname_list)
+    flag = 1; 
+    myname = runname_list(myindex);
+    myname_split = split(myname,'_');
     
-%     "simT=0_gam=0.03_prefr=200_prefsig=0_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=200_prefsig=0_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=200_prefsig=0_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=200_prefsig=0_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=200_prefsig=0_xi0=324_tdep.mat"
-%     
-%     "simT=0_gam=0.03_prefr=400_prefsig=0_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=400_prefsig=0_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=400_prefsig=0_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=400_prefsig=0_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=400_prefsig=0_xi0=324_tdep.mat"
-% 
-%     "simT=0_gam=0.03_prefr=800_prefsig=0_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=800_prefsig=0_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=800_prefsig=0_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=800_prefsig=0_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=800_prefsig=0_xi0=324_tdep.mat"
-];
+    if ~strcmp(simT_plot,"all")
+        valcheck = split(myname,'simT=');
+        valcheck = split(valcheck(2),'_');
+        valcheck = str2num(valcheck(1));
+        if ~ismember(valcheck,simT_plot) % check if it is not there
+            flag = 0;
+        end
+    end
+    
+    if ~strcmp(gam_plot,"all")
+        valcheck = split(myname,'gam=');
+        valcheck = split(valcheck(2),'_');
+        valcheck = str2num(valcheck(1));
+        if ~ismember(valcheck,gam_plot) % check if it is not there
+            flag = 0;
+        end
+    end
 
-% sigma 0.01
-% runnames = [
-%     "simT=0_gam=0.03_prefr=50_prefsig=0.01_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=50_prefsig=0.01_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=50_prefsig=0.01_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=50_prefsig=0.01_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=50_prefsig=0.01_xi0=324_tdep.mat"
+    if ~strcmp(prefr_plot,"all")
+        valcheck = split(myname,'prefr=');
+        valcheck = split(valcheck(2),'_');
+        valcheck = str2num(valcheck(1));
+        if ~ismember(valcheck,prefr_plot) % check if it is not there
+            flag = 0;
+        end
+    end
 
-%     "simT=0_gam=0.03_prefr=100_prefsig=0.01_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=100_prefsig=0.01_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=100_prefsig=0.01_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=100_prefsig=0.01_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=100_prefsig=0.01_xi0=324_tdep.mat"
-%     
-%     "simT=0_gam=0.03_prefr=200_prefsig=0.01_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=200_prefsig=0.01_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=200_prefsig=0.01_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=200_prefsig=0.01_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=200_prefsig=0.01_xi0=324_tdep.mat"
-%     
-%     "simT=0_gam=0.03_prefr=400_prefsig=0.01_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=400_prefsig=0.01_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=400_prefsig=0.01_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=400_prefsig=0.01_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=400_prefsig=0.01_xi0=324_tdep.mat"
-% 
-%     "simT=0_gam=0.03_prefr=800_prefsig=0.01_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=800_prefsig=0.01_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=800_prefsig=0.01_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=800_prefsig=0.01_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=800_prefsig=0.01_xi0=324_tdep.mat"
-% ];
+    if ~strcmp(prefsig_plot,"all")
+        valcheck = split(myname,'prefsig=');
+        valcheck = split(valcheck(2),'_');
+        valcheck = str2num(valcheck(1));
+        if ~ismember(valcheck,prefsig_plot) % check if it is not there
+            flag = 0;
+        end
+    end
 
+    if ~strcmp(prefcohl2_plot,"all")
+        valcheck = split(myname,'prefcohl2=');
+        valcheck = split(valcheck(2),'_');
+        valcheck = str2num(valcheck(1));
+        if ~ismember(valcheck,prefcohl2_plot) % check if it is not there
+            flag = 0;
+        end
+    end
+
+    if ~strcmp(xi0_plot,"all")
+        valcheck = split(myname,'xi0=');
+        valcheck = split(valcheck(2),'_');
+        valcheck = str2num(valcheck(1));
+        if ~ismember(valcheck,xi0_plot) % check if it is not there
+            flag = 0;
+        end
+    end
+%     flag
+%     myname
+    if flag == 1
+        runnames{list_iter} = myname;
+        list_iter = list_iter + 1; 
+    end
+end
+runnames = string(runnames)';
+%%
 % on demand
-save_folder = "/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/";
-runnames = [
-    "simT=0_gam=0.03_prefr=100_prefsig=0_xi0=36_tdep.mat"
-    "simT=0_gam=0.03_prefr=200_prefsig=0_xi0=36_tdep.mat"
-];
+% save_folder = "/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/";
+% runnames = [
+%     "simT=0_gam=0.03_prefr=100_prefsig=0_xi0=36_tdep.mat"
+%     "simT=0_gam=0.03_prefr=200_prefsig=0_xi0=36_tdep.mat"
+% ];
 
 figure(20); clf
 legend_info = cell(size(runnames));
@@ -279,7 +227,9 @@ for run = 1:size(runnames)
     F2max = F2mean./mean(F2mean(:,t<.5),2);
 
     idxQs = 1;
-    idx = [2]%+19 %+200 % for other direction of Qs;
+    whichQs = [0.5,0.5];
+    idx = find(Qs(1,:)==whichQs(1));
+%     idx = [1]%+19 %+200 % for other direction of Qs;
     offsets = [0]';
     plot(t, F2max(idx,:) + offsets)
     % plot(t, F2max(idx,:)/(F2max(idx,10)) + offsets)
@@ -305,102 +255,11 @@ grid minor
 
 
 %% plot different peak same run
-% save_folder = './saved_sims/';
-save_folder = "/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/Laplacian_0p0/sigma_0p00/";
-save_folder = "/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/Laplacian_0p1/sigma_0p00/";
-save_folder = "/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/Laplacian_1p0/sigma_0p00/";
-save_folder = "/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/";
-% runnames = [
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.4_xi0=36_tdep.mat",
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.4_xi0=108_tdep.mat",
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.4_xi0=216_tdep.mat",
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.4_xi0=360_tdep.mat",
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.4_xi0=720_tdep.mat",
-%     
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.4_xi0=36_tdep.mat",
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.4_xi0=360_tdep.mat",
-% 
-% %     "simT=0_gam=0.03_prefr=400_prefsig=0.4_xi0=36_tdep.mat",
-% %     "simT=0_gam=0.03_prefr=400_prefsig=0.4_xi0=360_tdep.mat",
-% 
-%     "simT=0_gam=0.03_prefr=800_prefsig=0.4_xi0=36_tdep.mat",
-% %     "simT=0_gam=0.03_prefr=800_prefsig=0.4_xi0=360_tdep.mat",
-% 
-% 
-% 
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.1_xi0=36_tdep.mat",
-% %     "simT=0_gam=0.03_prefr=100_prefsig=0.1_xi0=360_tdep.mat",
-%     ];
-
-runnames = [
-%     "simT=0_gam=0.03_prefr=50_prefsig=0_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=50_prefsig=0_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=50_prefsig=0_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=50_prefsig=0_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=50_prefsig=0_xi0=324_tdep.mat"
-
-%     "simT=0_gam=0.03_prefr=100_prefsig=0_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=100_prefsig=0_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=100_prefsig=0_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=100_prefsig=0_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=100_prefsig=0_xi0=324_tdep.mat"
-%     
-%     "simT=0_gam=0.03_prefr=200_prefsig=0_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=200_prefsig=0_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=200_prefsig=0_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=200_prefsig=0_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=200_prefsig=0_xi0=324_tdep.mat"
-%     
-%     "simT=0_gam=0.03_prefr=400_prefsig=0_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=400_prefsig=0_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=400_prefsig=0_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=400_prefsig=0_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=400_prefsig=0_xi0=324_tdep.mat"
-% 
-    "simT=0_gam=0.03_prefr=800_prefsig=0_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=800_prefsig=0_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=800_prefsig=0_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=800_prefsig=0_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=800_prefsig=0_xi0=324_tdep.mat"
-];
-
-% runnames = [
-%     "simT=0_gam=0.03_prefr=50_prefsig=0.01_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=50_prefsig=0.01_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=50_prefsig=0.01_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=50_prefsig=0.01_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=50_prefsig=0.01_xi0=324_tdep.mat"
-
-%     "simT=0_gam=0.03_prefr=100_prefsig=0.01_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=100_prefsig=0.01_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=100_prefsig=0.01_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=100_prefsig=0.01_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=100_prefsig=0.01_xi0=324_tdep.mat"
-%     
-%     "simT=0_gam=0.03_prefr=200_prefsig=0.01_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=200_prefsig=0.01_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=200_prefsig=0.01_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=200_prefsig=0.01_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=200_prefsig=0.01_xi0=324_tdep.mat"
-%     
-%     "simT=0_gam=0.03_prefr=400_prefsig=0.01_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=400_prefsig=0.01_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=400_prefsig=0.01_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=400_prefsig=0.01_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=400_prefsig=0.01_xi0=324_tdep.mat"
-% 
-%     "simT=0_gam=0.03_prefr=800_prefsig=0.01_xi0=36_tdep.mat"
-%     "simT=0_gam=0.03_prefr=800_prefsig=0.01_xi0=108_tdep.mat"
-%     "simT=0_gam=0.03_prefr=800_prefsig=0.01_xi0=180_tdep.mat"
-%     "simT=0_gam=0.03_prefr=800_prefsig=0.01_xi0=252_tdep.mat"
-%     "simT=0_gam=0.03_prefr=800_prefsig=0.01_xi0=324_tdep.mat"
-% ];
-
 % on demand
-save_folder = "/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/";
-runnames = [
-    "simT=0_gam=0.03_prefr=200_prefsig=0_xi0=36_tdep.mat"
-];
+% save_folder = "/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/";
+% runnames = [
+%     "simT=0_gam=0.03_prefr=200_prefsig=0_xi0=36_tdep.mat"
+% ];
 
 figure(20); clf
 legend_info = cell(size(runnames));
@@ -497,5 +356,3 @@ grid minor
 % ylabel('Relative Intensity (arb)')
 % xlim([0.8, 3])
 % legend(num2str(1e3*kTs'))
-
-%% 
