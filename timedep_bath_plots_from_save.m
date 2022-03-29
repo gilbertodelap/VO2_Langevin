@@ -2,8 +2,12 @@
 % save_folder = './saved_sims/';
 % myfile = 'test1.mat';
 % save(strcat(save_folder,myfile), 'F2all','X00','X','Nx','Ny','Nt', 'opts0','opts')
-save_folder = '../VO2_Langevin_sims/';
+cd ~/Documents/DATA/2022/VO2_Langevin/
+addpath(genpath('./xspde_matlab/XSPDE_code/'));
+addpath(genpath('~/Documents/xdscode-master/'))
 
+%%
+save_folder = '../VO2_Langevin_sims/';
 % myfile = 'simT=0.002_prefr=3.2_xi0=0.1_tdep.mat';
 load(strcat(save_folder,myfile))
 %% plot lattice distortion field
@@ -124,7 +128,7 @@ end
 % % fprintf('Done.\n')
 
 
-%% plot same peak diffeerent runs
+%% load the relevant runs
 % save_folder = './saved_sims/';
 save_folder = "../VO2_Langevin_sims/";
 
@@ -132,9 +136,20 @@ save_folder = "../VO2_Langevin_sims/";
 simT_plot = 'all'; gam_plot = 'all'; prefr_plot = 'all'; 
 prefsig_plot = 'all'; prefcohl2_plot = 'all'; xi0_plot = 'all';
 
-simT_plot = [0.002];
-xi0_plot = [36];
-prefcohl2_plot = [.1];
+% simT_plot = [0.002];
+simT_plot = [0.011116];
+% simT_plot = [0.033348];
+
+% simT_plot = [0.002];
+
+% xi0_plot = [.7,.9]*360;
+% xi0_plot = 252;
+xi0_plot = [.1]*360;
+
+prefcohl2_plot = [1];
+
+prefr_plot = [200];
+
 prefsig_plot = [0.1];
 % runnames = everything in folder
 runname_list = string({dir(strcat(save_folder,'*.mat')).name})';
@@ -208,13 +223,16 @@ for myindex = 1:size(runname_list)
     end
 end
 runnames = string(runnames)';
-%%
+
+myfile = runnames(1)
+load(strcat(save_folder,myfile))
+%% plot same peak diffeerent runs
 % on demand
 % save_folder = "/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/";
 % runnames = [
 %     "simT=0_gam=0.03_prefr=100_prefsig=0_xi0=36_tdep.mat"
 %     "simT=0_gam=0.03_prefr=200_prefsig=0_xi0=36_tdep.mat"
-% ];
+% ];.
 
 figure(20); clf
 legend_info = cell(size(runnames));
@@ -225,20 +243,29 @@ for run = 1:size(runnames)
     
     F2mean = mean(F2all,3);
     F2max = F2mean./mean(F2mean(:,t<.5),2);
-
-    idxQs = 1;
-    whichQs = [0.5,0.5];
-    idx = find(Qs(1,:)==whichQs(1));
-%     idx = [1]%+19 %+200 % for other direction of Qs;
-    offsets = [0]';
-    plot(t, F2max(idx,:) + offsets)
-    % plot(t, F2max(idx,:)/(F2max(idx,10)) + offsets)
     
-%     F2difuse = mean(F2mean(F2mean(:,12) < 1e2,:),1);
-    % plot(t, F2difuse./F2difuse(end))
-    % plot(t, 3*mean(F2max(idx(1):idx(end),:),1)+2,'b')
+    % plot peak at indicated Q
+    idxQs = 1;
+    whichQs = [.5,.5]';
+    idx1 = find(Qs'==whichQs',1);
+    offsets = [0]';
+    plot(t, F2max(idx1,:) + offsets, 'LineWidth',4)
+
+    hold on
+    whichQs = [1,1]';
+    idx2 = find(Qs'==whichQs',1);
+    offsets = [0]';
+    plot(t, F2max(idx2,:) + offsets, 'LineWidth',4)
+%     plot(t, F2max(idx,:)/(F2max(idx,10)) + offsets)
+
+    hold on
+    F2difuse = mean(F2mean(F2mean(:,12) < .5e2,:),1);
+    plot(t, F2difuse./F2difuse(end)+1,'LineWidth',4)
+%     plot(t, 3*mean(F2max(idx(1):idx(end),:),1)+2,'b')
     % xlim([-.2, 3])
-    legend_info{run} = [strcat('Q= ', num2str(Qs(1,idx)'),' xi0= ',  num2str(opts.xi0))];
+    legend_info{run} = [strcat('Q= ', num2str(Qs(1,idx1)'),' xi0= ',  num2str(opts.xi0))];
+    legend_info{run} = [strcat('Q= ', num2str(Qs(1,idx2)'),' xi0= ',  num2str(opts.xi0))];
+
 
     hold on
 end
@@ -249,8 +276,10 @@ xlabel('time')
 ylabel('Relative Intensity (arb)')
 xlim([0.9, 5.5])
 xlim([-0.1, 5.5])
+ylim([0,2.1])
 grid on 
 grid minor
+set(gca,'FontSize',15)
 
 
 

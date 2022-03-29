@@ -11,13 +11,16 @@ addpath(genpath('~/Documents/xdscode-master/'))
 
 %%
 % prefactrvals = [100, 200, 400, 800]';
-simT = [1e-4*20]';
+simTvals = [1.1116e-04*100, 1.1116e-04*300]';
+% simT = [1.1116e-04*300]';
 prefactrvals = [200]';
-% xi0vals = [ .1, .3, .5, .7, .9]';
-xi0vals = [ .1]';
-prefactcohl2vals = [.1]';
-prefactsigvals = [.1]';
+xi0vals = [ .1, .3, .5]';
+% xi0vals = [ .1]';
+prefactcohl2vals = [1]';
+prefactsigvals = [0, 0.1]';
 
+for mysimT = 1:size(simTvals)
+    simT = simTvals(mysimT);
 for myprefactr = 1:size(prefactrvals)
     prefrval = prefactrvals(myprefactr);
 for myxi0val = 1:size(xi0vals)
@@ -105,7 +108,7 @@ opts.sig = @(xs,t) sqrt(2*opts.gam*opts.kT);    % constant temperature
 
     
 %% run over the ensemble of initial conditions
-Nensembles = 1;
+Nensembles = 10;
 % setup k-space
 nq = 201;
 Qs = linspace(0, 5, nq)'*[1,1]; 
@@ -310,6 +313,7 @@ save(strcat(save_folder,myfile), 'F2all','X00','X','Nx','Ny','Nt', 'opts0','opts
 
 
 videofile=sprintf('movies/movT=%1.g_tdep',opts.kT)
+end
 end
 end
 end
