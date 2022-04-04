@@ -11,13 +11,17 @@ addpath(genpath('~/Documents/xdscode-master/'))
 
 %%
 % prefactrvals = [100, 200, 400, 800]';
-simTvals = [1.1116e-04*100, 1.1116e-04*300]';
-% simT = [1.1116e-04*300]';
-prefactrvals = [200]';
-xi0vals = [ .1, .3, .5]';
+simTvals = [0.002, 1.1116e-04*100, 1.1116e-04*300]';
+simTvals = [0.002]';
+% simTvals = [1.1116e-04*100, 1.1116e-04*300]';
+
+prefactrvals = [400]';
+xi0vals = [ .1]';
 % xi0vals = [ .1]';
-prefactcohl2vals = [1]';
-prefactsigvals = [0, 0.1]';
+prefactcohl2vals = [0]';
+prefactcohl2vals = [0,1]';
+
+prefactsigvals = [0.5]';
 
 for mysimT = 1:size(simTvals)
     simT = simTvals(mysimT);
@@ -108,10 +112,11 @@ opts.sig = @(xs,t) sqrt(2*opts.gam*opts.kT);    % constant temperature
 
     
 %% run over the ensemble of initial conditions
-Nensembles = 10;
+Nensembles = 1;
 % setup k-space
 nq = 201;
 Qs = linspace(0, 5, nq)'*[1,1]; 
+Qs = linspace(.5, .52, nq)'*[1,1]; 
 % Qs2 = linspace(6, 10, nq)'*[1,-1];
 % Qs2 = linspace(0, 5, nq)'*[1,2]; 
 % Qs = [Qs; Qs2]';

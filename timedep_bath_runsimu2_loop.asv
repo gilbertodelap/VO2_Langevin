@@ -11,13 +11,18 @@ addpath(genpath('~/Documents/xdscode-master/'))
 
 %%
 % prefactrvals = [100, 200, 400, 800]';
-simT = []
-prefactrvals = [200]';
-% xi0vals = [ .1, .3, .5, .7, .9]';
+simTvals = [0.002, 1.1116e-04*100, 1.1116e-04*300]';
+simTvals = [0.002]';
+prefactrvals = [0]';
 xi0vals = [ .1]';
-prefactcohl2vals = [1];
-prefactsigvals = [.1];
+% xi0vals = [ .1]';
+prefactcohl2vals = [0]';
+prefactcohl2vals = [0]';
 
+prefactsigvals = [200.5]';
+
+for mysimT = 1:size(simTvals)
+    simT = simTvals(mysimT);
 for myprefactr = 1:size(prefactrvals)
     prefrval = prefactrvals(myprefactr);
 for myxi0val = 1:size(xi0vals)
@@ -72,7 +77,10 @@ opts.xi0 =xi0val* Lx;       % pump penetration depth [nm]
 opts.xi0xray = 1e8;     % xray penetration depth [nm]
 opts.kT =1e-04*70;        % kT 
 opts.kT =1e-04*20;        % kT 
-opts.kT =1e-04*0;   
+opts.kT =1e-04*0;
+opts.kT =1.1116e-04*100; % 100K
+opts.kT =1.1116e-04*300; % 300K
+opts.kT = simT;
 
 dt = opts.ranges(1)/opts.npoints(1);
 dx = opts.ranges(2)/opts.npoints(2);
@@ -106,6 +114,7 @@ Nensembles = 1;
 % setup k-space
 nq = 201;
 Qs = linspace(0, 5, nq)'*[1,1]; 
+Qs = linspace(.5, .52, nq)'*[1,1]; 
 % Qs2 = linspace(6, 10, nq)'*[1,-1];
 % Qs2 = linspace(0, 5, nq)'*[1,2]; 
 % Qs = [Qs; Qs2]';
@@ -307,6 +316,7 @@ save(strcat(save_folder,myfile), 'F2all','X00','X','Nx','Ny','Nt', 'opts0','opts
 
 
 videofile=sprintf('movies/movT=%1.g_tdep',opts.kT)
+end
 end
 end
 end

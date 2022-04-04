@@ -136,9 +136,14 @@ save_folder = "../VO2_Langevin_sims/";
 simT_plot = 'all'; gam_plot = 'all'; prefr_plot = 'all'; 
 prefsig_plot = 'all'; prefcohl2_plot = 'all'; xi0_plot = 'all';
 
-% simT_plot = [0.002];
-simT_plot = [0.011116];
+simT_plot = [0.002];
+% simT_plot = [0.011116];
 % simT_plot = [0.033348];
+% 
+% simT_plot = [0.002,0.011116];
+% simT_plot = [0.002,0.033348];
+% simT_plot = [0.011116,0.033348];
+% simT_plot = [0.002,0.011116,0.033348];
 
 % simT_plot = [0.002];
 
@@ -148,12 +153,12 @@ xi0_plot = [.1]*360;
 
 prefcohl2_plot = [1];
 
-prefr_plot = [200];
+prefr_plot = [400];
 
-prefsig_plot = [0.1];
+prefsig_plot = [0.5];
 % runnames = everything in folder
 runname_list = string({dir(strcat(save_folder,'*.mat')).name})';
-
+% 
 %
 runnames = {};
 list_iter = 1;
@@ -223,10 +228,10 @@ for myindex = 1:size(runname_list)
     end
 end
 runnames = string(runnames)';
-
+runnames
 myfile = runnames(1)
 load(strcat(save_folder,myfile))
-%% plot same peak diffeerent runs
+%% plot same peak different runs
 % on demand
 % save_folder = "/media/gilberto/data2/DATA/2022/VO2_sims/saved_sims/";
 % runnames = [
@@ -246,41 +251,53 @@ for run = 1:size(runnames)
     
     % plot peak at indicated Q
     idxQs = 1;
-    whichQs = [.5,.5]';
-    idx1 = find(Qs'==whichQs',1);
+    whichQs = [0.50,0.50]';
+    idx1 = find(abs(Qs'-whichQs')<10^-6,1);
     offsets = [0]';
     plot(t, F2max(idx1,:) + offsets, 'LineWidth',4)
+    legend_info{run,1} = [strcat('Q=[', num2str(whichQs(1))," ", num2str(whichQs(2)),'] T= ',  num2str(round(opts.kT,3)*1e4))];
 
     hold on
-    whichQs = [1,1]';
-    idx2 = find(Qs'==whichQs',1);
+    whichQs = [.50,.50]';
+%     idx2 = find(Qs'-whichQs',1);
+    idx2 = find(abs(Qs'-whichQs')<10^-6,1); 
     offsets = [0]';
     plot(t, F2max(idx2,:) + offsets, 'LineWidth',4)
 %     plot(t, F2max(idx,:)/(F2max(idx,10)) + offsets)
+    legend_info{run,2} = [strcat('Q=[', num2str(whichQs(1))," ", num2str(whichQs(2)),'] T= ',  num2str(round(opts.kT,3)*1e4))];
 
-    hold on
-    F2difuse = mean(F2mean(F2mean(:,12) < .5e2,:),1);
-    plot(t, F2difuse./F2difuse(end)+1,'LineWidth',4)
-%     plot(t, 3*mean(F2max(idx(1):idx(end),:),1)+2,'b')
-    % xlim([-.2, 3])
-    legend_info{run} = [strcat('Q= ', num2str(Qs(1,idx1)'),' xi0= ',  num2str(opts.xi0))];
-    legend_info{run} = [strcat('Q= ', num2str(Qs(1,idx2)'),' xi0= ',  num2str(opts.xi0))];
+%     hold on
+% %     F2difuse = mean(F2mean(F2mean(:,12) < .1e2,:),1);
+%     % try taking multiple times before the pump to get better sense of
+%     % diffuse scattering
+%     F2difuse = mean(F2mean(sum(F2mean(:,1:20) < .1e2,2)~=0,:),1);
+%     %
+%     plot(t, F2difuse./F2difuse(end)+1,'LineWidth',4)
+% %     plot(t, 3*mean(F2max(idx(1):idx(end),:),1)+1,'b')
+%     % xlim([-.2, 3])
+% %     legend_info{run} = [strcat('Q= ', num2str(whichQs'),' xi0= ',  num2str(opts.xi0))];
+% %     legend_info{run} = [strcat('Q= [', num2str(whichQs'),'] xi0= ',  num2str(opts.xi0))];
+%     legend_info{run,3} = [strcat('Q=Diffuse T= ',  num2str(round(opts.kT,3)*1e4))];
 
 
     hold on
 end
+legend_info = legend_info';
+legend_info = vertcat(legend_info{:});
+legend(legend_info,Location="northwest")
+legend
 
-legend(legend_info)
+title(strcat(' sig = ', num2str( prefsig_plot(1)), ' r = ', num2str( prefr_plot(1)) ) );
 
 xlabel('time')
 ylabel('Relative Intensity (arb)')
 xlim([0.9, 5.5])
 xlim([-0.1, 5.5])
-ylim([0,2.1])
+ylim([0,2])
+axis('tight')
 grid on 
 grid minor
 set(gca,'FontSize',15)
-
 
 
 %% plot different peak same run
@@ -301,9 +318,18 @@ for run = 1:size(runnames)
     F2max = F2mean./mean(F2mean(:,t<.5),2);
 
     idxQs = 1;
-    qcellsiz = 19;
-    idx = [12,12+qcellsiz] %+200 % for other direction of Qs;
-    offsets = [0,0]';
+    idxQs = 1;
+    whichQs = [0.5,0.5]';
+    idx1 = find(abs(Qs'-whichQs')<10^-6,1);
+
+    whichQs = linspace(.5, .502, 11)'*[1,1];
+    idx = linspace(0,0,size(whichQs,1));
+    for wQind = 1:size(whichQs,1)
+        myQ = whichQs(wQind);
+        idx1(wQind) = find(abs(Qs'-myQ)<10^-6,1);
+    end
+    offsets = linspace(0,size(whichQs,1)-1,size(whichQs,1))'*.2;
+    %
 
 %     idx = [2,4,6,8,10,12,14,16,18]+19 %+200 % for other direction of Qs;
 %     offsets = [0,0,0,0,0,0,0,0,0]';
@@ -313,26 +339,28 @@ for run = 1:size(runnames)
 %     idx = [2,4,6,8,10]+19+8 %+200 % for other direction of Qs;
 %     offsets = [0,0,0,0,0]';
 
-    plot(t, F2max(idx,:) + offsets)
+    plot(t, F2max(idx1,:) + offsets, 'LineWidth',4)
     % plot(t, F2max(idx,:)/(F2max(idx,10)) + offsets)
     
 %     F2difuse = mean(F2mean(F2mean(:,12) < 1e2,:),1);
     % plot(t, F2difuse./F2difuse(end))
     % plot(t, 3*mean(F2max(idx(1):idx(end),:),1)+2,'b')
     % xlim([-.2, 3])
-    legend_info{run} = [strcat('Q= ', num2str(Qs(1,idx)'),' xi0= ',  num2str(opts.xi0))];
-
+%     legend_info{run} = [strcat('Q= ', num2str(Qs(1,idx)'),' xi0= ',  num2str(opts.xi0))];
+    legend_info = num2str(whichQs);
     hold on
 end
 
 legend(legend_info)
-
 xlabel('time')
 ylabel('Relative Intensity (arb)')
 xlim([0.9, 5.5])
 xlim([-0.1, 5.5])
+ylim([0,max(offsets)+2.5])
 grid on 
 grid minor
+set(gca,'FontSize',15)
+title(strcat(' sig = ', num2str( prefsig_plot(1)), ' r = ', num2str( prefr_plot(1)) ) );
 
 %% plot intensity in reciprocal space
 % figure(20); clf
