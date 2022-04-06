@@ -151,11 +151,13 @@ simT_plot = [0.002];
 % xi0_plot = 252;
 xi0_plot = [.1]*360;
 
-prefcohl2_plot = [1];
+prefcohl2_plot = [0,1];
 
-prefr_plot = [400];
+prefr_plot = [0];
 
-prefsig_plot = [0.5];
+prefsig_plot = [801.5];
+% prefsig_plot = [200];
+
 % runnames = everything in folder
 runname_list = string({dir(strcat(save_folder,'*.mat')).name})';
 % 
@@ -251,16 +253,16 @@ for run = 1:size(runnames)
     
     % plot peak at indicated Q
     idxQs = 1;
-    whichQs = [0.50,0.50]';
-    idx1 = find(abs(Qs'-whichQs')<10^-6,1);
+    whichQs = [1.50,-1.50]';
+    idx1 = find(sum(abs(Qs'-whichQs'),2)<10^-6);
     offsets = [0]';
     plot(t, F2max(idx1,:) + offsets, 'LineWidth',4)
     legend_info{run,1} = [strcat('Q=[', num2str(whichQs(1))," ", num2str(whichQs(2)),'] T= ',  num2str(round(opts.kT,3)*1e4))];
 
     hold on
-    whichQs = [.50,.50]';
+    whichQs = [1.502,1.502]';
 %     idx2 = find(Qs'-whichQs',1);
-    idx2 = find(abs(Qs'-whichQs')<10^-6,1); 
+    idx2 = find(sum(abs(Qs'-whichQs'),2)<10^-6); 
     offsets = [0]';
     plot(t, F2max(idx2,:) + offsets, 'LineWidth',4)
 %     plot(t, F2max(idx,:)/(F2max(idx,10)) + offsets)
@@ -320,13 +322,13 @@ for run = 1:size(runnames)
     idxQs = 1;
     idxQs = 1;
     whichQs = [0.5,0.5]';
-    idx1 = find(abs(Qs'-whichQs')<10^-6,1);
+    idx1 = find(abs(Qs2-whichQs')<10^-6,1);
 
-    whichQs = linspace(.5, .502, 11)'*[1,1];
+    whichQs = linspace(1.5, 1.502, 11)'*[1,-1];
     idx = linspace(0,0,size(whichQs,1));
     for wQind = 1:size(whichQs,1)
         myQ = whichQs(wQind);
-        idx1(wQind) = find(abs(Qs'-myQ)<10^-6,1);
+        idx1(wQind) = find(abs(Qs2-myQ)<10^-6,1);
     end
     offsets = linspace(0,size(whichQs,1)-1,size(whichQs,1))'*.2;
     %

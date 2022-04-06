@@ -12,16 +12,16 @@ addpath(genpath('~/Documents/xdscode-master/'))
 %%
 % prefactrvals = [100, 200, 400, 800]';
 simTvals = [0.002, 1.1116e-04*100, 1.1116e-04*300]';
-simTvals = [0.002]';
+% simTvals = [0.002]';
 % simTvals = [1.1116e-04*100, 1.1116e-04*300]';
 
-prefactrvals = [400]';
+prefactrvals = [0]';
 xi0vals = [ .1]';
 % xi0vals = [ .1]';
 prefactcohl2vals = [0]';
 prefactcohl2vals = [0,1]';
 
-prefactsigvals = [0.5]';
+prefactsigvals = [801.5]';
 
 for mysimT = 1:size(simTvals)
     simT = simTvals(mysimT);
@@ -77,11 +77,11 @@ opts.tauf = 1.2;        % [ps]
 opts.xi0 =xi0val* Lx;       % pump penetration depth [nm] 
 % opts.xi0xray = 1*Lx;     % xray penetration depth [nm]
 opts.xi0xray = 1e8;     % xray penetration depth [nm]
-opts.kT =1e-04*70;        % kT 
-opts.kT =1e-04*20;        % kT 
-opts.kT =1e-04*0;
-opts.kT =1.1116e-04*100; % 100K
-opts.kT =1.1116e-04*300; % 300K
+% opts.kT =1e-04*70;        % kT 
+% opts.kT =1e-04*20;        % kT 
+% opts.kT =1e-04*0;
+% opts.kT =1.1116e-04*100; % 100K
+% opts.kT =1.1116e-04*300; % 300K
 opts.kT = simT;
 
 dt = opts.ranges(1)/opts.npoints(1);
@@ -117,10 +117,13 @@ Nensembles = 1;
 nq = 201;
 Qs = linspace(0, 5, nq)'*[1,1]; 
 Qs = linspace(.5, .52, nq)'*[1,1]; 
+Qs = linspace(1.5, 1.52, nq)'*[1,1];
+
+Qs2 = linspace(1.5, 1.52, nq)'*[1,-1];
 % Qs2 = linspace(6, 10, nq)'*[1,-1];
 % Qs2 = linspace(0, 5, nq)'*[1,2]; 
 % Qs = [Qs; Qs2]';
-Qs = [Qs]';
+Qs = [Qs;Qs2]';
 Fall = zeros(size(Qs,2), opts.npoints(1), Nensembles);
 
 % for a 2D grid in Q-space use this:
