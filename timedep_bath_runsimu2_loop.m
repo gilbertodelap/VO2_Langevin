@@ -12,17 +12,24 @@ addpath(genpath('~/Documents/xdscode-master/'))
 %%
 % prefactrvals = [100, 200, 400, 800]';
 simTvals = [0.002, 1.1116e-04*100, 1.1116e-04*300]';
-% simTvals = [0.002]';
+simTvals = [0.002]';
 % simTvals = [1.1116e-04*100, 1.1116e-04*300]';
 
+prefactrvals = [0,100]';
 prefactrvals = [0]';
+
 xi0vals = [ .1]';
 % xi0vals = [ .1]';
 prefactcohl2vals = [0]';
-prefactcohl2vals = [0,1]';
+prefactcohl2vals = [1]';
+prefactsigvals = [0]';
+% prefactsigvals = [0,200]';
+taufvals = [1]';
 
-prefactsigvals = [801.5]';
+getDiffuse = 1;
 
+for mytauf = 1:size(taufvals)
+    tauf = taufvals(mytauf);
 for mysimT = 1:size(simTvals)
     simT = simTvals(mysimT);
 for myprefactr = 1:size(prefactrvals)
@@ -72,7 +79,7 @@ opts.cohlengths2 = prefact_cohl2*20.6e-2*[1.2^2,1.2^2];  % nm^2
 
 opts.gam = 0.03;        % [ps]
 % opts.tauf = 1.2;        % [ps]
-opts.tauf = 1.2;        % [ps]
+opts.tauf = tauf*1.2;        % [ps]
 % opts.xi0 = 0.2*Lx;       % pump penetration depth [nm] 
 opts.xi0 =xi0val* Lx;       % pump penetration depth [nm] 
 % opts.xi0xray = 1*Lx;     % xray penetration depth [nm]
@@ -115,15 +122,27 @@ opts.sig = @(xs,t) sqrt(2*opts.gam*opts.kT);    % constant temperature
 Nensembles = 1;
 % setup k-space
 nq = 201;
-Qs = linspace(0, 5, nq)'*[1,1]; 
-Qs = linspace(.5, .52, nq)'*[1,1]; 
-Qs = linspace(1.5, 1.52, nq)'*[1,1];
+% Qs = linspace(0, 5, nq)'*[1,1]; 
+% Qs = linspace(.5, .52, nq)'*[1,1]; 
+Qs = linspace(1.0, 1.02, nq)'*[.5,2.5];
+Qs = linspace(1.5, 1.52, nq)'*[1,1]; 
 
-Qs2 = linspace(1.5, 1.52, nq)'*[1,-1];
+
+
+Qs2 = linspace(1.0, 1.02, nq)'*[.5,-2.5];
+Qs2 = linspace(1.5, 1.52, nq)'*[1,-1]; 
+
 % Qs2 = linspace(6, 10, nq)'*[1,-1];
 % Qs2 = linspace(0, 5, nq)'*[1,2]; 
 % Qs = [Qs; Qs2]';
-Qs = [Qs;Qs2]';
+% Qs = [Qs;Qs2]';
+Qs = Qs'; % if single Qs do not transpose???
+
+if getDiffuse
+    Qs = linspace(0, 5, nq)'*[1,1]; % for Diffuse
+    Qs = Qs';
+end
+
 Fall = zeros(size(Qs,2), opts.npoints(1), Nensembles);
 
 % for a 2D grid in Q-space use this:
@@ -316,11 +335,15 @@ F2max = F2max./max(F2mean,[],2);
 % save_folder = './saved_sims/';
 save_folder = '../VO2_Langevin_sims/';
 % myfile = sprintf('simT=%1g_prefr=%1g_tdep.mat',opts.kT,prefact_r)
-myfile = sprintf('simT=%1g_gam=%1g_prefr=%1g_prefsig=%1g_prefcohl2=%1g_xi0=%1g_tdep.mat',opts.kT,opts.gam,prefact_r,prefact_sig,prefact_cohl2,opts.xi0)
+myfile = sprintf('simT=%1g_gam=%1g_prefr=%1g_prefsig=%1g_prefcohl2=%1g_xi0=%1g_tauf=%1g_tdep.mat',opts.kT,opts.gam,prefact_r,prefact_sig,prefact_cohl2,opts.xi0,opts.tauf)
+if getDiffuse
+    myfile = sprintf('simT=%1g_gam=%1g_prefr=%1g_prefsig=%1g_prefcohl2=%1g_xi0=%1g_tauf=%1g_tdep_Diffuse.mat',opts.kT,opts.gam,prefact_r,prefact_sig,prefact_cohl2,opts.xi0,opts.tauf)
+end
 save(strcat(save_folder,myfile), 'F2all','X00','X','Nx','Ny','Nt', 'opts0','opts','t','Qs')
 
 
 videofile=sprintf('movies/movT=%1.g_tdep',opts.kT)
+end
 end
 end
 end
